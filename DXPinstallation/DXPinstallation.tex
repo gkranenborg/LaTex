@@ -1,0 +1,381 @@
+\input{style.tex}
+
+\begin{document}
+
+\frontmatter
+\title{Fujitsu DXP demo VM}
+\author{Gerben Kranenborg}
+\date{\today}
+\pagenumbering{gobble}
+
+%This is the TITLE page
+
+%\begin{center}
+
+\noindent \textsf{\textbf{\Huge Fujitsu DXP\\}}
+\noindent \textsf{\textbf{\Large demo VM.\\}}
+
+\vspace{0.75in}
+
+\centerline{\includegraphics{img/redswoosh}}
+
+\vspace{0.75in}
+
+\noindent \textsf{\textbf{\Huge Digital Transformation Platform}}
+
+\vspace{0.75in}
+
+\noindent
+Copyright \copyright 2017 by Fujitsu America
+\newline
+
+\noindent
+%All rights reserved.\\
+Printed \today
+
+%\end{center}
+\pagenumbering{arabic}
+\tableofcontents
+
+\chapter{Document purpose}
+
+\begin{myindent}
+This document will explain to steps to be taken to create a new DXP demo VM, based on the installation script 'dxp-install.sh',
+as well as the initial configuration required to achive a succesfull installation. All steps documented will be caried out based
+on a CentOS VM. At this point Windows based platforms are not covered.
+\end{myindent}
+
+{\let\clearpage\relax\par \chapter{DXP platfrom setup}}
+
+\begin{myindent}
+Within the DXP software suite we recognize three different setups :
+\newline
+
+\noindent \textbf{DXP Lite :} This setup consists out of the Fujitsu REA software as well as Kibana and Elastic Search, including any other software required.
+\newline
+
+\noindent \textbf{DXP Community :} This setup consists out of Flowable BPM as well as any other software required.
+\newline
+
+\noindent \textbf{DXP Enterprise :} This setup consists out of Interstage BPM, Agile Adapter, Kibana, Elastic Search as well as any other software required.
+\newline
+
+\noindent During the installation you will have to specify which platform you want to install. A combination of any of these platforms is not possible at the moment.
+\newline
+
+\noindent To install any DXP platform, we will be using an external (flash)drive, mounted to the VM. This is done so no additional VM disk space will be allocated for the
+software installation files during the installation. These files are no longer needed at the end of the installation, however if they were stored within the VM,
+they would allocate disk space, which cannot be reclaimed later on. This has a direct (negative) effect on the overal VM file size, which is important when transferring
+VM's using FTP.
+\newline
+
+\noindent In the chapter 'Prerequisites', the initial directory layout will be documented, and it is advisable to start that layout at the root level of the external (flash)drive.
+That root directory will serve as the mountpoint inside the VM later on, prior to the start of the actual installation.
+\end{myindent}
+
+\chapter{Prerequisites}
+
+\begin{myindent}
+In order to install the DXP demo VM, several software packages need to be available first to do so. Below is an overview of all software components required
+to install any of the aforementiond DXP platforms. Note that the installation script will only check for the software components required for the application
+you select to be installed.
+\newline
+
+\noindent The tables below show the directory in which the files needs to be placed, as well as the actual file name of the component. All directory names are to be
+located at the root of the external (flash) drive. Directory names are listed between '/' characters.
+\newline
+
+\noindent \textbf{Note:} All files in \textbf{bold} are developed / maintained by Fujitsu
+and need to be downloaded from the internal file server.
+\newline
+\end{myindent}
+
+ \begin{center}
+	\textbf{File and Directory list :}
+	\begin{tabular}{|p{2in}|p{4in}|}
+	\hline
+	\textbf{Directory :} & \textbf{File(s) :}\\
+	\hline
+	dxp.config & Fujitsu download site\\
+	dxp-install.sh & Fujitsu download site\\
+	/bal-jars/ & \textbf{BPMActionLibrary.jar}\\
+	& \textbf{jscommands.txt}\\
+	& mendo.jar\\
+	& twitter4j-core-4.0.4.jar\\
+	\hline
+	/flowable-classes/ & \textbf{db.properties}\\
+	& \textbf{flowable-admin.xml}\\
+	& \textbf{flowable-idm.xml}\\
+	& \textbf{flowable-modeler}\\
+	& \textbf{flowable-task}\\
+	\hline
+	/misc/ & \textbf{alfresco.start}\\
+	& \textbf{flowable-rest.xml}\\
+	& \textbf{initflowable.sql}\\
+	& postgresql-42.1.3.jre7.jar\\
+	& \textbf{README.txt}\\
+	& \textbf{smtphost.sql}\\
+	\hline
+	\end{tabular}
+\end{center}
+\begin{center}
+	\begin{tabular}{|p{2in}|p{4in}|}
+	\hline
+	\textbf{Directory :} & \textbf{File(s) :}\\
+	\hline
+	/options/ & \textbf{aa.war}\\
+	& \textbf{chat.sh}\\
+	& \textbf{posthoc.war}\\
+	& \textbf{ssofi.war}\\
+	/options/chat/ & \textbf{/node\_modules/}\\
+	& \textbf{/public/}\\
+	& \textbf{/routes/}\\
+	& \textbf{app.js}\\
+	& \textbf{nodejschat}\\
+	& \textbf{package.json}\\
+	\hline
+	/rea/ & \textbf{data.zip}\\
+	& \textbf{default.conf}\\
+	& \textbf{nginx.conf}\\
+	& \textbf{rea.zip}\\
+	\hline
+	/software/ & alfresco-community-installer-201707-linux-x64.bin\\
+	& apache-tomcat-8.5.23.tar\\
+	& elasticsearch-5.5.2.rpm\\
+	& elastic-head-master.zip\\
+	& flowable-6.2.0.zip\\
+	& \textbf{I-BPM11.4.1-EnterpriseEdition-CD\_IMAGE.zip}\\
+	& jboss-eap-6.4\\
+	& jdk-8u151-linux-x64.rpm\\
+	& kibana-5.5.2-x86\_64.rpm\\
+	& node-v6.11.4-linux-x64.tar\\
+	& oracle-xe-11.2.0.x86\_64.rpm\\
+	& postgresql96-9.6.3-1PGDG.rhel7.x86\_64.rpm\\
+	& postgresql96-libs-9.6.3-1PGDG.rhel7.x86\_64.rpm\\
+	& postgresql96-server-9.6.3-1PGDG.rhel7.x86\_64.rpm\\
+	& ppasmeta-9.5.0.5-linux-x64.tar\\
+	/software/patch/ & BZ-1358913.zip\\
+	\hline
+	\end{tabular}
+\end{center}
+\begin{center}
+	\begin{tabular}{|p{2in}|p{4in}|}
+	\hline
+	\textbf{Directory :} & \textbf{File(s) :}\\
+	\hline
+	/software/patch/jboss-eap-6/ & jboss-eap-6.4.1.CP.zip\\
+	& jboss-eap-6.4.2.CP.zip\\
+	& jboss-eap-6.4.3.CP.zip\\
+	& jboss-eap-6.4.4.CP.zip\\
+	& jboss-eap-6.4.5.CP.zip\\
+	& jboss-eap-6.4.6.CP.zip\\
+	& jboss-eap-6.4.7.CP.zip\\
+	& jboss-eap-6.4.8.CP.zip\\
+	& jboss-eap-6.4.9.CP.zip\\
+	\hline
+	/web/ & \textbf{appversions.html}\\
+	& \textbf{index.html}\\
+	/web/css/ & bootstrap.css\\
+	& \textbf{main.css}\\
+	/web/scripts/ & angular.min\\
+	& \textbf{appcontroller.js}\\
+	& jquery.min\\
+	& \textbf{STATUSresult.json}\\
+	& \textbf{systemstatus}\\
+	& \textbf{version.json}\\
+	\hline
+	\end{tabular}
+\end{center}
+
+\chapter{Downloading the software}
+
+\begin{myindent}
+To download the required software, please see the table below for the Websites / URLs' :
+\end{myindent}
+
+\begin{center}
+	\textbf{Download URL's :}
+	\begin{tabular}{|l|p{11.2cm}|}
+	\hline
+	\textbf{File :} & \textbf{Download site :}\\
+	\hline
+	alfresco-community-installer & \url{https://www.alfresco.com/products/community/download}\\
+	apache-tomcat-8.5.23.tar & \url{https://tomcat.apache.org/download-80.cgi}\\
+	elasticsearch-5.5.2.rpm & \url{htpps://www.elastic.co/downloads}\\
+	elasticsearch-head-master.zip & \url{https://github.com/mobz/elasticsearch-head}\\
+	flowable-6.2.0.zip & \url{http://www.flowable.org/downloads.html}\\
+	I-BPM11.4.1-EnterpriseEdition-CD*.zip & Fujitsu download site.\\
+	jboss-eap-6.4.zip & \url{https://developers.redhat.com/products/eap/download}\\
+	jdk*-linux-x64.rpm & \url{http://www.oracle.com/technetwork/java/javase/downloads}\\
+	kibana-5.5.2-x86\_64.rpm & \url{https://www.elastic.co/downloads/kibana}\\
+	node-v6.11.4-linux-x64.rpm.zip & \url{https://nodejs.org/en/download/}\\
+	oracle-xe-11.2.0-1.0.x86 & \url{http://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html}\\
+	postgresql96*PGDG*.rpm & \url{https://www.postgresql.org/download/linux/redhat/}\\
+	ppasmeta-9.5.0.5-linux-x64.tar.gz & \url{https://www.enterprisedb.com/software-downloads-postgres}\\
+	\hline
+	\end{tabular}
+\end{center}
+
+\chapter{Creating the CentOS VM}
+
+\begin{myindent}
+In addition to all of the files listed before, you also need the proper .iso file to create the CentOS VM.
+Download 'CentOS-7-x86\_64-Minimal-1708.iso' first, and use that to create the VM.
+To create the VM you will need 'VMWare Player', which is dowloadable for free from the Internet. If you do not have
+this software installed yet, please do so first.
+\newline
+
+\noindent Once you have VMWare Player installed, start it, and select 'Create a New Virtual Machine', and select 'Installer disc image file (iso):'.
+Use the 'Browse' button to locate and select the .iso file you downloaded before, then click 'Next'.
+Enter a name for this new VM in the box 'Virtual machine name', and enter the location where you want this new VM to be created, using the 'Browse' button.
+This location should be an empty folder on your machine. Click 'Next' to move on to the next section.
+Select the 'Maximum disk size (GB):' to be 30 GB and select 'Split virtual disk into multiple files', then click 'Next'.
+Click 'Customize Hardware', and select '8 GB' for the 'Memory settings', and '2' cores for the 'Processors' settings, and click 'Close'.
+Click 'Finish' to start the build process.
+\newline
+
+\noindent VMWare Player now starts to create the VM. On the next screen select 'Install CentOS 7' when prompted, and let the process continue until the next screen shows up after a short time.
+Select 'English' and 'English (United States)' and click 'Continue', then click on 'Installation Destination' and click the 'Done' button, then click on 'Network \& Hostname', and click on 'Off' to turn networking on.
+Click the 'Done' button again, followed by 'Begin Installation'.
+Click on 'Root Password' and set this password to be Fujitsu1
+\newline
+
+\noindent You will have to confirm this password and then click the 'Done' button twice.
+The VM will now be created and will ask you to reboot it at the end.
+Once the VM reboots, click 'I Finished Installing' at the bottom, and login as 'root' (password : Fujitsu1) to prepare the VM for software installation.
+\end{myindent}
+
+{\let\clearpage\relax\par \chapter{Preparing for installation}}
+
+\begin{myindent}
+Now that the VM itself is ready, the software and scripts have to be prepared first to install the products we need.
+Login to the VM as 'root' and create a new directory as follows :
+\newline
+
+\begin{urlboxstyle}
+mkdir /opt/install
+\end{urlboxstyle}
+\newline
+
+\noindent Per the instructions before, the entire directory structure with all software should be located on an external disk or (flash)drive. Make sure this external device is connected to the same laptop you
+are installing this new VM on. In VMWare Player, go to 'Player' (at the top), and select 'Removable Devices'. Now locate the external device with the software located on it, and select it. From the submenu,
+now select 'Connect (Disconnect from host)'. This will physically connect your external device to the VM, as if you insert a real hard disk into a server.
+Next you have to mount this device to a mount point. This needs to be done using the following command :
+\newline
+
+\begin{urlboxstyle}
+mount -f vfat /dev/sdb1 /opt/install
+\end{urlboxstyle}
+\newline
+
+\noindent Go to the new directory to finish the setup of the installer :
+\newline
+
+\begin{urlboxstyle}
+cd /opt/install
+\end{urlboxstyle}
+\newline
+
+\noindent You should now be able to see all software required, just as listed in the table above. If you do need to make changes as far as the components to be installed, open the \textbf{'dxp.config'} file using an editior.
+Modify any variable as needed, making sure that the new value is always enclosed by '"'.
+The values for VMVERSION, APPLICATION, ALFRESCO and TARGET\_DIR do not need to be modified directly in this file, since you can do so using the install script.
+Make sure that any variable starting with a 'V' is correct, as those reflect the version of the software components to be installed. If these numbers do not match with the files downloaded before, 
+the installation will fail.
+\newline
+
+\noindent \textbf{IMPORTANT : }Never change any of the files used for the installation during or after the installation, unless you have to make changes to the dxp.config file. Those changes should only be made prior to the start
+of a new installation !!
+\newline
+
+\noindent Check all other variables to make sure they are correct. An explanation per varialbe is given in the '.config' file at the bottom.
+
+\noindent Save and exit the config file, and make sure the install script is executable :
+\newline
+
+\begin{urlboxstyle}
+chmod 755 dxp-install.sh
+\end{urlboxstyle}
+\newline
+\end{myindent}
+
+{\let\clearpage\relax\par \chapter{Installing the software}}
+
+\begin{myindent}
+\noindent You are now ready to install the software. Start the installer :
+\newline
+
+\begin{urlboxstyle}
+./dxp-install.sh
+\end{urlboxstyle}
+\newline
+
+\noindent A Welcome screen will now show up, please press 'Enter' to move to the next step.
+The script will indicate which Application is going to be installed. If this is correct, press 'Enter', otherwise enter 'n' and press 'Enter'.
+If 'n' is selected, select the correct application, \textbf{'I'} for Interstage IBPM, \textbf{'F'} for Flowable and \textbf{'R'} for REA, and press 'Enter'.
+Next check the VM version number. If it is correct, press 'Enter', otherwise press 'n' and 'Enter'. Then enter the correct number and press 'Enter'.
+If 'Interstage BPM' has been selected as the software to be installed, the script will now indicate if Alfresco will be installed or not. If the option shown is NOT correct,
+enter 'n' and press 'Enter', and the Afresco option will change.
+Next, the script will ask where to install the software, by default this will be '/opt'. If this is correct, press 'Enter', if not, enter 'n', press 'Enter' and enter the correct directory,
+and press 'Enter'.
+\newline
+
+\noindent The first part of the installation will now start, and after only a minute or so, the VM will reboot. Once it is running, login with 'root' again and run the following commands:
+\newline
+
+\begin{urlboxstyle}
+mount -f vfat /dev/sdb1 /opt/install
+\end{urlboxstyle}
+\newline
+
+\begin{urlboxstyle}
+cd /opt/install
+\end{urlboxstyle}
+\newline
+
+\begin{urlboxstyle}
+./dxp-install.sh
+\end{urlboxstyle}
+\newline
+
+\noindent This will start the second part of the software installation. The script will show you the status per step until the end of the installation.
+Once the installation is done, the content of the installation error log file will be shown. You can browse through that information using the space-bar. Once you get to the end of the log file
+the VM will reboot again.
+\newline
+
+\noindent \textbf{Note:} If the variable 'CLEARLOG' in the dxp.config file was set to 'false' at the start of the installation, the log files will be present in '/opt/logs'. Please review those files,
+and remove the entire 'logs' directory, before delivering the VM to end-users.
+\end{myindent}
+
+{\let\clearpage\relax\par \chapter{After the installation}}
+
+\begin{myindent}
+\noindent Now that the software has been installed, you can start using it, by first makeing sure your local 'hosts' file is up to date. Once the VM has been (re)booted, it will show the hostname as well as the IP address.
+Update your local 'hosts' file and add a line to the bottom showing your IP address and hostname (e.g. 192.168.222.160	interstagedemo), if it is not already there.
+Save and exit the file, and start your favorite browser and enter http://interstagedemo
+The main web page should now show up, and you can use the software installed from there.
+\end{myindent}
+
+{\let\clearpage\relax\par \chapter{Release notes}}
+
+\begin{center}
+	\textbf{Document history}
+	\begin{tabular}{|l|l|l|l|}
+	\hline
+	\textbf{Version No. :} & \textbf{Description :} & \textbf{Author :} & \textbf{Date :}\\
+	\hline
+	1.0 & I-BPM automated installation manual & Gerben Kranenborg & Oct. 14, 2016\\
+	2.0 & Addition of 'silent' installation option & Gerben Kranenborg & Oct. 18, 2016\\
+	3.0 & Addition of Kibana and Elastic Search & Gerben Kranenborg & Oct. 21, 2016\\
+	3.1 & Addition of BAL and Kibana Index init. & Gerben Kranenborg & Oct. 26, 2016\\
+	4.1 & Addition of time sync., dynamic start scripts & Gerben Kranenborg & Nov. 21, 2016\\
+	5.0 & Addition of E.S and Kibana 5.1 support & Gerben Kranenborg & Dec. 20, 2016\\
+	6.0 & Addition of I-BPM 11.4 & Gerben Kranenborg & Jan. 10, 2017\\
+	6.1 & Optional JBoss / I-BPM installation support & Gerben Kranenborg & Jan. 12, 2017\\
+	7.0 & Addition of Postgres support & Gerben Kranenborg & Apr. 21, 2017\\
+	7.1 & Bug fixes for Postgres support & Gerben Kranenborg & Apr. 25, 2017\\
+	13.0 & Rewrite to support all DXP platforms & Gerben Kranenborg & Oct. 30, 2017\\
+	\hline
+	\end{tabular}
+\end{center}
+
+\end{document}

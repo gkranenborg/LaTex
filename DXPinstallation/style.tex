@@ -1,0 +1,191 @@
+\documentclass[letterpaper,11pt,pagesize=pdftex,openright,headings=twolinechapter,chapterprefix=true,oneside]{scrbook}
+
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage[table]{xcolor}
+\usepackage{makeidx}
+\usepackage{fontspec}
+\usepackage{longtable}
+\usepackage{nameref}
+
+\setmainfont[Ligatures={Common,TeX}, Numbers={OldStyle}]{Nimbus Sans L}
+%\KOMAoptions{DIV=last}   % goofy KOMA requirement whenever you change leading
+\addtokomafont{footnote}{\footnotesize\fontspec[Ligatures=TeX]{Alegreya Sans}}
+\deffootnote{1.5em}{1em}{% modified example from page 83
+  \makebox[1.5em][l]{\textsuperscript{\thefootnotemark}}}
+
+
+\makeindex
+
+\usepackage[inner=1in,outer=1in,top=1.0in, bottom=1.0in, footnotesep=.4in]{geometry}
+\usepackage{changepage, hyperref, graphicx}
+
+\newenvironment{myindent}{\begin{adjustwidth}{2.0em}{}}{\end{adjustwidth}}
+\newcommand*{\thead}[1]{\multicolumn{1}{|c|}{\bfseries #1}}
+
+%Page size settings
+\pdfpagewidth=\paperwidth
+\pdfpageheight=\paperheight
+
+
+\hyphenation{so-lvers hun-ches Golds-worthy pre-dic-ta-ble com-pu-te-ri-sa-tion self-in-te-re-sted tech-ni-qu-es tre-men-do-us}
+
+
+\setlength{\emergencystretch}{15pt}
+
+
+%control whether extra vertical space is distributed between paragraphs
+%either raggedbottom or flushbottom
+\raggedbottom
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=purple,
+    urlcolor=blue
+}
+
+
+\usepackage{scrhack}
+\usepackage{lineno}
+\usepackage{listings}
+
+\lstset{ %
+  backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\ttfamily\footnotesize,% the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{green},      % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,                    % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=Java,                   % the language of the code
+  otherkeywords={*,...},           % if you want to add more keywords to the set
+  numbers=right,                   % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{gray},   % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=5,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{blue},        % string literal style
+  tabsize=2,                       % sets default tabsize to 2 spaces
+  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+
+\newenvironment{urlboxstyle}
+    {\vspace{.15in}\noindent %
+	\arrayrulecolor{purple} %
+    \begin{ttfamily}
+	\begin{tabular}{|p{0.9\textwidth}|}
+    \hline
+    }
+    {
+    \\\hline
+    \end{tabular}
+    \end{ttfamily}
+	\arrayrulecolor{black} %
+	\vspace{.15in}
+    }
+
+
+\newcommand{\imagehere}[1]{%
+    \vspace{.25in}%
+    \begin{center}%
+      \includegraphics[width=\textwidth,height=3in,keepaspectratio=true]{prt-img/#1}%
+    \end{center}%
+    \vspace{.25in}%
+}
+
+%TABLES
+%make more space between lines
+\renewcommand{\arraystretch}{1.3}
+
+
+\newcommand{\librarysection}[1]{%
+    \index{#1}%
+    \chapter{#1}%
+}
+
+\newcommand{\librarycommand}[1]{%
+    \newpage%
+    \index{#1}%
+    \section{#1}%
+}
+
+\newenvironment{inputblock}
+    {
+    Input:
+    \begin{itemize}
+    }
+    {
+    \end{itemize}
+    }
+
+\newenvironment{outputblock}
+    {
+    Output:
+    \begin{itemize}
+    }
+    {
+    \end{itemize}
+    }
+
+
+%this macro creates the paragraphs with a bold title at the beginning
+%a little extra space before, and no indent.  This should be used only
+%at the beginning of a paragraph, and the paramter is the paragraph title.
+%Do not put punctuation after the title.  The following sentence should
+%start with a capital letter.
+\newcommand{\paratitle}[1]{\vspace{3mm}\noindent\textbf{#1} \hspace{2mm}}
+
+
+%\usepackage{draftwatermark}
+%\SetWatermarkText{Preview Copy}
+%\SetWatermarkScale{0.5}
+
+
+\newenvironment{fieldlist} %
+    {\begin{center} %
+    \begin{longtable}{@{}p{0.2\textwidth}p{0.8\textwidth}@{}} %
+    \hline %
+    } %
+    { %
+    \end{longtable} %
+    \end{center} %
+    }
+
+\newcommand{\fieldlistitem}[2] {%
+    \emph{#1} & #2\\ \hline %
+}
+
+\newcommand{\datalistitem}[2] {%
+    \textbf{#1} & #2\\ \hline %
+}
+
+\newenvironment{glossarylist}%
+   {\begin{list}{}{\setlength\labelwidth{0pt}%
+                   \setlength\itemindent{-\leftmargin}%
+                   \let\makelabel\descriptionlabel}}%
+   {\end{list}}
+
+\newcommand{\chapterauthor}[1]{
+    \begin{center}
+    {\fontspec{Verdana}\fontsize{14}{16}\bfseries #1}
+    \end{center}
+}
+\newcommand{\chapterabstract}[1]{
+    \begin{quote}
+    \emph{#1}
+    \end{quote}
+}
+
+
+\newcommand{\crossref}[1] {section~\ref{#1} \nameref{#1} on page~\pageref{#1}}
